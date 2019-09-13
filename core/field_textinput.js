@@ -108,6 +108,16 @@ Blockly.FieldTextInput.prototype.CURSOR = 'text';
 Blockly.FieldTextInput.prototype.spellcheck_ = true;
 
 /**
+ * Create block UI for this label.
+ * @package
+ */
+Blockly.FieldTextInput.prototype.initView = function() {
+  Blockly.FieldTextInput.superClass_.initView.call(this);
+  this.textElement_.setAttribute('y', this.size_.height / 2);
+  this.textElement_.setAttribute('dominant-baseline', 'central');
+};
+
+/**
  * Ensure that the input value casts to a valid string.
  * @param {*=} opt_newValue The input value.
  * @return {*} A valid string, or null if invalid.
@@ -412,17 +422,6 @@ Blockly.FieldTextInput.prototype.resizeEditor_ = function() {
   var x = this.sourceBlock_.RTL ? bBox.right - div.offsetWidth : bBox.left;
   var xy = new Blockly.utils.Coordinate(x, bBox.top);
 
-  // Shift by a few pixels to line up exactly.
-  xy.y += 1;
-  if (Blockly.utils.userAgent.GECKO && Blockly.WidgetDiv.DIV.style.top) {
-    // Firefox mis-reports the location of the border by a pixel
-    // once the WidgetDiv is moved into position.
-    xy.x -= 1;
-    xy.y -= 1;
-  }
-  if (Blockly.utils.userAgent.WEBKIT) {
-    xy.y -= 3;
-  }
   div.style.left = xy.x + 'px';
   div.style.top = xy.y + 'px';
 };
