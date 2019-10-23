@@ -1,6 +1,6 @@
 {
-  "name": "blockly",
-  "version": "3.20191014.2",
+  "name": "xdrone-dsl",
+  "version": "0.1.3",
   "description": "Blockly is a library for building visual programming editors.",
   "keywords": [
     "blockly"
