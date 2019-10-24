@@ -14,7 +14,7 @@ Blockly.defineBlocksWithJsonArray([
         name: "commands"
       }
     ],
-    colour: 230,
+    colour: "#18526B",
     tooltip: "",
     helpUrl: "fly"
   },
@@ -45,7 +45,7 @@ Blockly.defineBlocksWithJsonArray([
     ],
     previousStatement: null,
     nextStatement: null,
-    colour: 230,
+    colour: "#CE3A52",
     tooltip: "move Forward",
     helpUrl: ""
   },
@@ -69,7 +69,7 @@ Blockly.defineBlocksWithJsonArray([
     ],
     previousStatement: null,
     nextStatement: null,
-    colour: 230,
+    colour: "#3B92B8",
     tooltip: "move Forward",
     helpUrl: ""
   }

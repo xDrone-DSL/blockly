@@ -1,6 +1,6 @@
 {
   "name": "blockly-xdronedsl",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Blockly is a library for building visual programming editors.",
   "keywords": [
     "blockly"
