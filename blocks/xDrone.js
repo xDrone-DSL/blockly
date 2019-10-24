@@ -51,7 +51,7 @@ Blockly.defineBlocksWithJsonArray([
   },
   {
     type: "rotate",
-    message0: "Rotate %1 for %2 seconds",
+    message0: "Rotate %1 for %2 degrees",
     args0: [
       {
         type: "field_dropdown",
@@ -63,8 +63,8 @@ Blockly.defineBlocksWithJsonArray([
         name: "duration",
         value: 1,
         min: 0,
-        max: 10,
-        precision: 0.1
+        max: 360,
+        precision: 1
       }
     ],
     previousStatement: null,

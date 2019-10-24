@@ -1775,7 +1775,6 @@ declare module Blockly.BlockSvg {
 
     /**
      * Vertical space between elements.
-     * TODO (#3142): Remove.
      * @const
      * @package
      */
@@ -1783,7 +1782,6 @@ declare module Blockly.BlockSvg {
 
     /**
      * Minimum height of a block.
-     * TODO (#3142): Remove.
      * @const
      * @package
      */
@@ -1791,7 +1789,6 @@ declare module Blockly.BlockSvg {
 
     /**
      * Width of horizontal puzzle tab.
-     * TODO (#3142): Remove.
      * @const
      * @package
      */
@@ -1799,7 +1796,6 @@ declare module Blockly.BlockSvg {
 
     /**
      * Do blocks with no previous or output connections have a 'hat' on top?
-     * TODO (#3142): Remove.
      * @const
      * @package
      */
@@ -2977,13 +2973,13 @@ declare module Blockly.DropDownDiv {
     /**
      * Timer for animation out, to be cleared if we need to immediately hide
      * without disrupting new shows.
-     * @type {number}
+     * @type {?number}
      */
     var animateOutTimer_: number;
 
     /**
      * Callback for when the drop-down is hidden.
-     * @type {Function}
+     * @type {?Function}
      */
     var onHide_: Function;
 
@@ -3043,14 +3039,14 @@ declare module Blockly.DropDownDiv {
      * by a particular field. The primary position will be below the field,
      * and the secondary position above the field. Drop-down will be
      * constrained to the block's workspace.
-     * @param {!Object} owner The object showing the drop-down.
+     * @param {!Blockly.Field} field The field to position the dropdown against.
      * @param {Function=} opt_onHide Optional callback for when the drop-down is
      *   hidden.
      * @param {number=} opt_secondaryYOffset Optional Y offset for above-block
      *   positioning.
      * @return {boolean} True if the menu rendered below block; false if above.
      */
-    function showPositionedByField(owner: Object, opt_onHide?: Function, opt_secondaryYOffset?: number): boolean;
+    function showPositionedByField(field: Blockly.Field, opt_onHide?: Function, opt_secondaryYOffset?: number): boolean;
 
     /**
      * Show and place the drop-down.
@@ -3061,14 +3057,16 @@ declare module Blockly.DropDownDiv {
      * If we can't maintain the container bounds at the primary point, fall-back to the
      * secondary point and position above.
      * @param {Object} owner The object showing the drop-down
+     * @param {boolean} rtl Right-to-left (true) or left-to-right (false).
      * @param {number} primaryX Desired origin point x, in absolute px
      * @param {number} primaryY Desired origin point y, in absolute px
      * @param {number} secondaryX Secondary/alternative origin point x, in absolute px
      * @param {number} secondaryY Secondary/alternative origin point y, in absolute px
      * @param {Function=} opt_onHide Optional callback for when the drop-down is hidden
      * @return {boolean} True if the menu rendered at the primary origin point.
+     * @package
      */
-    function show(owner: Object, primaryX: number, primaryY: number, secondaryX: number, secondaryY: number, opt_onHide?: Function): boolean;
+    function show(owner: Object, rtl: boolean, primaryX: number, primaryY: number, secondaryX: number, secondaryY: number, opt_onHide?: Function): boolean;
 
     /**
      * Helper to position the drop-down and the arrow, maintaining bounds.
@@ -3532,7 +3530,7 @@ declare module Blockly {
             /**
              * Abstract class for an editable field.
              * @param {*} value The initial value of the field.
-             * @param {Function=} opt_validator  A function that is called to validate
+             * @param {?Function=} opt_validator  A function that is called to validate
              *    changes to the field's value. Takes in a value & returns a validated
              *    value, or null to abort the change.
              * @param {Object=} opt_config A map of options used to configure the field. See
@@ -4988,10 +4986,10 @@ declare module Blockly {
              * Class for an editable number field.
              * @param {string|number=} opt_value The initial value of the field. Should cast
              *    to a number. Defaults to 0.
-             * @param {(string|number)=} opt_min Minimum value.
-             * @param {(string|number)=} opt_max Maximum value.
-             * @param {(string|number)=} opt_precision Precision for value.
-             * @param {Function=} opt_validator A function that is called to validate
+             * @param {?(string|number)=} opt_min Minimum value.
+             * @param {?(string|number)=} opt_max Maximum value.
+             * @param {?(string|number)=} opt_precision Precision for value.
+             * @param {?Function=} opt_validator A function that is called to validate
              *    changes to the field's value. Takes in a number & returns a validated
              *    number, or null to abort the change.
              * @param {Object=} opt_config A map of options used to configure the field.
@@ -5037,15 +5035,15 @@ declare module Blockly {
              * values. That is, the user's value will rounded to the closest multiple of
              * precision. The least significant digit place is inferred from the precision.
              * Integers values can be enforces by choosing an integer precision.
-             * @param {number|string|undefined} min Minimum value.
-             * @param {number|string|undefined} max Maximum value.
-             * @param {number|string|undefined} precision Precision for value.
+             * @param {?(number|string|undefined)} min Minimum value.
+             * @param {?(number|string|undefined)} max Maximum value.
+             * @param {?(number|string|undefined)} precision Precision for value.
              */
             setConstraints(min: number|string|any /*undefined*/, max: number|string|any /*undefined*/, precision: number|string|any /*undefined*/): void;
     
             /**
              * Sets the minimum value this field can contain. Updates the value to reflect.
-             * @param {number|string|undefined} min Minimum value.
+             * @param {?(number|string|undefined)} min Minimum value.
              */
             setMin(min: number|string|any /*undefined*/): void;
     
@@ -5058,7 +5056,7 @@ declare module Blockly {
     
             /**
              * Sets the maximum value this field can contain. Updates the value to reflect.
-             * @param {number|string|undefined} max Maximum value.
+             * @param {?(number|string|undefined)} max Maximum value.
              */
             setMax(max: number|string|any /*undefined*/): void;
     
@@ -5072,7 +5070,7 @@ declare module Blockly {
             /**
              * Sets the precision of this field's value, i.e. the number to which the
              * value is rounded. Updates the field to reflect.
-             * @param {number|string|undefined} precision The number to which the
+             * @param {?(number|string|undefined)} precision The number to which the
              *    field's value is rounded.
              */
             setPrecision(precision: number|string|any /*undefined*/): void;
@@ -5147,7 +5145,7 @@ declare module Blockly {
              * Class for an editable text field.
              * @param {string=} opt_value The initial value of the field. Should cast to a
              *    string. Defaults to an empty string if null or undefined.
-             * @param {Function=} opt_validator A function that is called to validate
+             * @param {?Function=} opt_validator A function that is called to validate
              *    changes to the field's value. Takes in a string & returns a validated
              *    string, or null to abort the change.
              * @param {Object=} opt_config A map of options used to configure the field.
@@ -6540,7 +6538,6 @@ declare module Blockly {
              * Get the size of the icon as used for rendering.
              * This differs from the actual size of the icon, because it bulges slightly
              * out of its row rather than increasing the height of its row.
-             * TODO (#2562): Remove getCorrectedSize.
              * @return {!Blockly.utils.Size} Height and width.
              */
             getCorrectedSize(): Blockly.utils.Size;
@@ -13307,8 +13304,11 @@ declare module Blockly.tree {
              */
             constructor(content: string, config: Blockly.tree.BaseNode.Config);
     
-            /** @protected {Blockly.tree.TreeControl} */
-            tree: any /*missing*/;
+            /**
+             * @type {Blockly.tree.TreeControl}
+             * @protected
+             */
+            tree: Blockly.tree.TreeControl;
     
             /**
              * Adds roles and states.
@@ -14481,7 +14481,6 @@ declare module Blockly.blockRendering {
             /**
              * Figure out where the right edge of the block and right edge of statement inputs
              * should be placed.
-             * TODO: More cleanup.
              * @protected
              */
             computeBounds_(): void;
@@ -15170,7 +15169,6 @@ declare module Blockly.blockRendering {
     
             /**
              * Get the last input on this row, if it has one.
-             * TODO: Consider moving this to InputRow, if possible.
              * @return {Blockly.blockRendering.InputConnection} The last input on the row,
              *     or null.
              * @package
