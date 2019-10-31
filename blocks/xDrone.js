@@ -29,7 +29,7 @@ Blockly.defineBlocksWithJsonArray([
           ["up", "UP"],
           ["down", "DOWN"],
           ["forward", "FORWARD"],
-          ["backwards", "BACK"],
+          ["backward", "BACKWARD"],
           ["right", "RIGHT"],
           ["left", "LEFT"]
         ]
