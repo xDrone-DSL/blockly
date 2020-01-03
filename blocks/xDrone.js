@@ -24,14 +24,14 @@ Blockly.defineBlocksWithJsonArray([
     args0: [
       {
         type: "field_dropdown",
-        name: "Direction",
+        name: "direction",
         options: [
-          ["up", "UP"],
-          ["down", "DOWN"],
           ["forward", "FORWARD"],
           ["backward", "BACKWARD"],
           ["right", "RIGHT"],
-          ["left", "LEFT"]
+          ["left", "LEFT"],
+          ["up", "UP"],
+          ["down", "DOWN"]
         ]
       },
       {
@@ -46,31 +46,54 @@ Blockly.defineBlocksWithJsonArray([
     previousStatement: null,
     nextStatement: null,
     colour: "#CE3A52",
-    tooltip: "move Forward",
+    tooltip: "move",
     helpUrl: ""
   },
   {
-    type: "rotate",
-    message0: "Rotate %1 for %2 degrees",
+    type: "rotateRight",
+    message0: "Rotate right for %1 degrees",
     args0: [
       {
-        type: "field_dropdown",
-        name: "direction",
-        options: [["right", "ROTATERIGHT"], ["left", "ROTATELEFT"]]
-      },
-      {
-        type: "field_number",
-        name: "duration",
-        value: 1,
-        min: 0,
-        max: 360,
-        precision: 1
+        type: "field_angle",
+        name: "angle",
+        angle: 90,
+        round: 15,
+        offset: 90,
+        clockwise: true
       }
     ],
     previousStatement: null,
     nextStatement: null,
     colour: "#3B92B8",
-    tooltip: "move Forward",
+    tooltip: "rotate",
+    helpUrl: ""
+  },
+  {
+    type: "rotateLeft",
+    message0: "Rotate left for %1 degrees",
+    args0: [
+      {
+        type: "field_angle",
+        name: "angle",
+        angle: 90,
+        round: 15,
+        offset: 90,
+        clockwise: false
+      }
+    ],
+    previousStatement: null,
+    nextStatement: null,
+    colour: "#3B92B8",
+    tooltip: "rotate",
+    helpUrl: ""
+  },
+  {
+    type: "action",
+    message0: "Action",
+    previousStatement: null,
+    nextStatement: null,
+    colour: 0,
+    tooltip: "action",
     helpUrl: ""
   }
 ]);

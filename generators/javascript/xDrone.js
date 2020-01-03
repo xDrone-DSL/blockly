@@ -12,17 +12,28 @@ Blockly.JavaScript["fly"] = function(block) {
 };
 
 Blockly.JavaScript["move"] = function(block) {
-  var dropdown_direction = block.getFieldValue("Direction");
+  var dropdown_direction = block.getFieldValue("direction");
   var number_duration = block.getFieldValue("duration");
 
   var code = dropdown_direction + "(" + number_duration + ")\n";
   return code;
 };
 
-Blockly.JavaScript["rotate"] = function(block) {
-  var dropdown_direction = block.getFieldValue("direction");
-  var number_duration = block.getFieldValue("duration");
+Blockly.JavaScript["rotateRight"] = function(block) {
+  var angle = block.getFieldValue("angle");
 
-  var code = dropdown_direction + "(" + number_duration + ")\n";
+  var code = "ROTATERIGHT(" + angle + ")\n";
+  return code;
+};
+
+Blockly.JavaScript["rotateLeft"] = function(block) {
+  var angle = block.getFieldValue("angle");
+
+  var code = "ROTATELEFT(" + angle + ")\n";
+  return code;
+};
+
+Blockly.JavaScript["action"] = function(block) {
+  var code = "ACTION();\n";
   return code;
 };
