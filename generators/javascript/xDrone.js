@@ -34,6 +34,19 @@ Blockly.JavaScript["rotateLeft"] = function(block) {
 };
 
 Blockly.JavaScript["action"] = function(block) {
-  var code = "ACTION();\n";
+  var code = "ACTION()\n";
+  return code;
+};
+
+Blockly.JavaScript["do"] = function(block) {
+  var number_repeat = block.getFieldValue("repeat");
+  var statements_statements = Blockly.JavaScript.statementToCode(
+    block,
+    "statements"
+  );
+  var code = "";
+  for (var i = 0; i < number_repeat; i++) {
+    code += statements_statements;
+  }
   return code;
 };

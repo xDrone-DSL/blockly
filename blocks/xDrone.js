@@ -95,5 +95,28 @@ Blockly.defineBlocksWithJsonArray([
     colour: 0,
     tooltip: "action",
     helpUrl: ""
+  },
+  {
+    type: "do",
+    message0: "Do %1 times %2 %3",
+    args0: [
+      {
+        type: "field_number",
+        name: "repeat",
+        value: 0,
+        min: 2,
+        max: 5
+      },
+      {
+        type: "input_dummy"
+      },
+      {
+        type: "input_statement",
+        name: "statements"
+      }
+    ],
+    colour: 230,
+    tooltip: "",
+    helpUrl: ""
   }
 ]);
