@@ -97,22 +97,20 @@ Blockly.defineBlocksWithJsonArray([
     helpUrl: ""
   },
   {
-    type: "do",
-    message0: "Do %1 times %2 %3",
+    type: "repeat",
+    message0: "Repeat %1 times %2 %3",
     args0: [
       {
         type: "field_number",
         name: "repeat",
-        value: 0,
-        min: 2,
-        max: 5
+        value: 1
       },
       {
         type: "input_dummy"
       },
       {
         type: "input_statement",
-        name: "statements"
+        name: "commands"
       }
     ],
     previousStatement: null,

@@ -3,11 +3,11 @@ goog.require("Blockly.JavaScript");
 
 Blockly.JavaScript["fly"] = function(block) {
   var statements_commands = Blockly.JavaScript.statementToCode(
-    block,
-    "commands"
+      block,
+      "commands"
   );
   var code =
-    "fly() {\n" + "  TAKEOFF()\n" + statements_commands + "  LAND()\n" + "}";
+      "fly() {\n" + "  TAKEOFF()\n" + statements_commands + "  LAND()\n" + "}";
   return code;
 };
 
@@ -38,15 +38,12 @@ Blockly.JavaScript["action"] = function(block) {
   return code;
 };
 
-Blockly.JavaScript["do"] = function(block) {
+Blockly.JavaScript["repeat"] = function(block) {
   var number_repeat = block.getFieldValue("repeat");
-  var statements_statements = Blockly.JavaScript.statementToCode(
-    block,
-    "statements"
+  var statements_commands = Blockly.JavaScript.statementToCode(
+      block,
+      "commands"
   );
-  var code = "";
-  for (var i = 0; i < number_repeat; i++) {
-    code += statements_statements;
-  }
+  var code = "REPEAT " + number_repeat + " TIMES {\n" + statements_commands + "}\n";
   return code;
 };
