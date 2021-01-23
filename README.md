@@ -24,7 +24,7 @@ We release by pushing the latest code to the master branch, followed by updating
 
 Releases are tagged by the release date (YYYYMMDD) with a leading '2.' and a trailing '.0' in case we ever need a major or minor version (such as [2.20190722.1](https://github.com/google/blockly/tree/2.20190722.1)). If you're using npm, you can install the ``blockly`` package on npm: 
 ```bash
-npm install blockly
+npm install blockly-xdronedsl
 ```
 
 ### New APIs
