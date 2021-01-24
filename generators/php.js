@@ -1,18 +1,7 @@
 /**
  * @license
  * Copyright 2015 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -103,7 +92,6 @@ Blockly.PHP.ORDER_ASSIGNMENT = 20;        // = += -= *= /= %= <<= >>= ...
 Blockly.PHP.ORDER_LOGICAL_AND_WEAK = 21;  // and
 Blockly.PHP.ORDER_LOGICAL_XOR = 22;       // xor
 Blockly.PHP.ORDER_LOGICAL_OR_WEAK = 23;   // or
-Blockly.PHP.ORDER_COMMA = 24;             // ,
 Blockly.PHP.ORDER_NONE = 99;              // (...)
 
 /**
@@ -128,6 +116,12 @@ Blockly.PHP.ORDER_OVERRIDES = [
   // a || (b || c) -> a || b || c
   [Blockly.PHP.ORDER_LOGICAL_OR, Blockly.PHP.ORDER_LOGICAL_OR]
 ];
+
+/**
+ * Whether the init method has been called.
+ * @type {?boolean}
+ */
+Blockly.PHP.isInitialized = false;
 
 /**
  * Initialise the database of variable names.
@@ -161,11 +155,12 @@ Blockly.PHP.init = function(workspace) {
   var variables = Blockly.Variables.allUsedVarModels(workspace);
   for (var i = 0, variable; variable = variables[i]; i++) {
     defvars.push(Blockly.PHP.variableDB_.getName(variable.getId(),
-        Blockly.Variables.NAME_TYPE) + ';');
+        Blockly.VARIABLE_CATEGORY_NAME) + ';');
   }
 
   // Declare all of the variables.
   Blockly.PHP.definitions_['variables'] = defvars.join('\n');
+  this.isInitialized = true;
 };
 
 /**
@@ -201,7 +196,7 @@ Blockly.PHP.scrubNakedValue = function(line) {
  * quotes.
  * @param {string} string Text to encode.
  * @return {string} PHP string.
- * @private
+ * @protected
  */
 Blockly.PHP.quote_ = function(string) {
   string = string.replace(/\\/g, '\\\\')
@@ -215,10 +210,14 @@ Blockly.PHP.quote_ = function(string) {
  * quotes.
  * @param {string} string Text to encode.
  * @return {string} PHP string.
- * @private
+ * @protected
  */
-Blockly.PHP.multiline_quote_ = function(string) {
-  return '<<<EOT\n' + string + '\nEOT';
+Blockly.PHP.multiline_quote_ = function (string) {
+  var lines = string.split(/\n/g).map(Blockly.PHP.quote_);
+  // Join with the following, plus a newline:
+  // . "\n" .
+  // Newline escaping only works in double-quoted strings.
+  return lines.join(' . \"\\n\" .\n');
 };
 
 /**
@@ -229,7 +228,7 @@ Blockly.PHP.multiline_quote_ = function(string) {
  * @param {string} code The PHP code created for this block.
  * @param {boolean=} opt_thisOnly True to generate code for only this statement.
  * @return {string} PHP code with comments and subsequent blocks added.
- * @private
+ * @protected
  */
 Blockly.PHP.scrub_ = function(block, code, opt_thisOnly) {
   var commentCode = '';
@@ -248,7 +247,7 @@ Blockly.PHP.scrub_ = function(block, code, opt_thisOnly) {
       if (block.inputList[i].type == Blockly.INPUT_VALUE) {
         var childBlock = block.inputList[i].connection.targetBlock();
         if (childBlock) {
-          var comment = Blockly.PHP.allNestedComments(childBlock);
+          comment = Blockly.PHP.allNestedComments(childBlock);
           if (comment) {
             commentCode += Blockly.PHP.prefixLines(comment, '// ');
           }

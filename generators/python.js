@@ -1,18 +1,7 @@
 /**
  * @license
  * Copyright 2012 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -137,8 +126,15 @@ Blockly.Python.ORDER_OVERRIDES = [
 ];
 
 /**
+ * Whether the init method has been called.
+ * @type {?boolean}
+ */
+Blockly.Python.isInitialized = false;
+
+/**
  * Initialise the database of variable names.
  * @param {!Blockly.Workspace} workspace Workspace to generate code from.
+ * @this {Blockly.Generator}
  */
 Blockly.Python.init = function(workspace) {
   /**
@@ -172,10 +168,11 @@ Blockly.Python.init = function(workspace) {
   var variables = Blockly.Variables.allUsedVarModels(workspace);
   for (var i = 0; i < variables.length; i++) {
     defvars.push(Blockly.Python.variableDB_.getName(variables[i].getId(),
-        Blockly.Variables.NAME_TYPE) + ' = None');
+        Blockly.VARIABLE_CATEGORY_NAME) + ' = None');
   }
 
   Blockly.Python.definitions_['variables'] = defvars.join('\n');
+  this.isInitialized = true;
 };
 
 /**
@@ -217,7 +214,7 @@ Blockly.Python.scrubNakedValue = function(line) {
  * Encode a string as a properly escaped Python string, complete with quotes.
  * @param {string} string Text to encode.
  * @return {string} Python string.
- * @private
+ * @protected
  */
 Blockly.Python.quote_ = function(string) {
   // Can't use goog.string.quote since % must also be escaped.
@@ -232,7 +229,7 @@ Blockly.Python.quote_ = function(string) {
     } else {
       string = string.replace(/'/g, '\\\'');
     }
-  };
+  }
   return quote + string + quote;
 };
 
@@ -241,12 +238,13 @@ Blockly.Python.quote_ = function(string) {
  * with quotes.
  * @param {string} string Text to encode.
  * @return {string} Python string.
- * @private
+ * @protected
  */
 Blockly.Python.multiline_quote_ = function(string) {
-  // Can't use goog.string.quote since % must also be escaped.
-  string = string.replace(/'''/g, '\\\'\\\'\\\'');
-  return '\'\'\'' + string + '\'\'\'';
+  var lines = string.split(/\n/g).map(Blockly.Python.quote_);
+  // Join with the following, plus a newline:
+  // + '\n' +
+  return lines.join(' + \'\\n\' + \n');
 };
 
 /**
@@ -257,7 +255,7 @@ Blockly.Python.multiline_quote_ = function(string) {
  * @param {string} code The Python code created for this block.
  * @param {boolean=} opt_thisOnly True to generate code for only this statement.
  * @return {string} Python code with comments and subsequent blocks added.
- * @private
+ * @protected
  */
 Blockly.Python.scrub_ = function(block, code, opt_thisOnly) {
   var commentCode = '';
@@ -276,7 +274,7 @@ Blockly.Python.scrub_ = function(block, code, opt_thisOnly) {
       if (block.inputList[i].type == Blockly.INPUT_VALUE) {
         var childBlock = block.inputList[i].connection.targetBlock();
         if (childBlock) {
-          var comment = Blockly.Python.allNestedComments(childBlock);
+          comment = Blockly.Python.allNestedComments(childBlock);
           if (comment) {
             commentCode += Blockly.Python.prefixLines(comment, '# ');
           }

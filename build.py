@@ -1,4 +1,9 @@
 #!/usr/bin/python2.7
+#
+# Deprecation warning: (July 2020)
+# This build script has been deprecated, please use 'npm run build' instead.
+# The script will be removed from Blockly core in Q4 of 2020.
+#
 # Compresses the core Blockly files into a single JavaScript file.
 #
 # Copyright 2012 Google LLC
@@ -202,6 +207,8 @@ class Gen_compressed(threading.Thread):
       if filename == "core/blockly.js":
         code = code.replace("Blockly.VERSION = 'uncompiled';",
                             "Blockly.VERSION = '%s';" % blocklyVersion)
+      # Strip out all requireType calls.
+      code = re.sub(r"goog.requireType(.*)", "", code)
       params.append(("js_code", code.encode("utf-8")))
       f.close()
 
@@ -235,6 +242,7 @@ goog.provide('Blockly.FieldNumber');
 goog.provide('Blockly.FieldTextInput');
 goog.provide('Blockly.FieldVariable');
 goog.provide('Blockly.Mutator');
+goog.provide('Blockly.Warning');
 """))
     # Read in all the source files.
     filenames = glob.glob(os.path.join("blocks", "*.js"))
@@ -266,6 +274,7 @@ goog.provide('Blockly.Mutator');
     # with the compiler.
     params.append(("js_code", """
 goog.provide('Blockly.Generator');
+goog.provide('Blockly.utils.global');
 goog.provide('Blockly.utils.string');
 """))
     filenames = glob.glob(
@@ -280,7 +289,7 @@ goog.provide('Blockly.utils.string');
 
     # Remove Blockly.Generator and Blockly.utils.string to be compatible
     # with Blockly.
-    remove = r"var Blockly=\{[^;]*\};\s*Blockly.utils.string={};\n?"
+    remove = r"var Blockly=\{[^;]*\};\s*Blockly.utils.global={};\s*Blockly.utils.string={};\n?"
     self.do_compile(params, target_filename, filenames, remove)
 
   def do_compile(self, params, target_filename, filenames, remove):
@@ -305,7 +314,7 @@ goog.provide('Blockly.utils.string');
     def file_lookup(name):
       if not name.startswith("Input_"):
         return "???"
-      n = int(name[6:]) - 1
+      n = int(name[6:])
       return filenames[n]
 
     if "serverErrors" in json_data:
@@ -380,18 +389,7 @@ goog.provide('Blockly.utils.string');
 
  (Copyright \\d+ (Google LLC|Massachusetts Institute of Technology))
 ( All rights reserved.
-)?
- Licensed under the Apache License, Version 2.0 \\(the "License"\\);
- you may not use this file except in compliance with the License.
- You may obtain a copy of the License at
-
-   http://www.apache.org/licenses/LICENSE-2.0
-
- Unless required by applicable law or agreed to in writing, software
- distributed under the License is distributed on an "AS IS" BASIS,
- WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- See the License for the specific language governing permissions and
- limitations under the License.
+)? SPDX-License-Identifier: Apache-2.0
 \\*/""")
     return re.sub(apache2, "", code)
 
@@ -410,14 +408,14 @@ class Gen_langfiles(threading.Thread):
     try:
       subprocess.check_call([
           "python",
-          os.path.join("i18n", "js_to_json.py"),
+          os.path.join("scripts", "i18n", "js_to_json.py"),
           "--input_file", "msg/messages.js",
           "--output_dir", "msg/json/",
           "--quiet"])
     except (subprocess.CalledProcessError, OSError) as e:
       # Documentation for subprocess.check_call says that CalledProcessError
       # will be raised on failure, but I found that OSError is also possible.
-      print("Error running i18n/js_to_json.py: ", e)
+      print("Error running scripts/i18n/js_to_json.py: ", e)
       sys.exit(1)
 
     # Checking whether it is necessary to rebuild the js files would be a lot of
@@ -427,7 +425,7 @@ class Gen_langfiles(threading.Thread):
       # Use create_messages.py to create .js files from .json files.
       cmd = [
           "python",
-          os.path.join("i18n", "create_messages.py"),
+          os.path.join("scripts", "i18n", "create_messages.py"),
           "--source_lang_file", os.path.join("msg", "json", "en.json"),
           "--source_synonym_file", os.path.join("msg", "json", "synonyms.json"),
           "--source_constants_file", os.path.join("msg", "json", "constants.json"),
@@ -440,7 +438,7 @@ class Gen_langfiles(threading.Thread):
       cmd.extend(json_files)
       subprocess.check_call(cmd)
     except (subprocess.CalledProcessError, OSError) as e:
-      print("Error running i18n/create_messages.py: ", e)
+      print("Error running scripts/i18n/create_messages.py: ", e)
       sys.exit(1)
 
     # Output list of .js files created.
@@ -491,6 +489,10 @@ if __name__ == "__main__":
   calcdeps = import_path(os.path.join("closure", "bin", "calcdeps.py"))
   full_search_paths = calcdeps.ExpandDirectories(["core", "closure"])
   full_search_paths = sorted(full_search_paths)  # Deterministic build.
+
+  print("Deprecation Warning: (July 2020)\n This build script has been " +
+    "deprecated, please use 'npm run build' instead. \n The script will be " +
+    "removed from Blockly core in Q4 of 2020.\n")
 
   # Uncompressed and compressed are run in parallel threads.
   # Uncompressed is limited by processor speed.

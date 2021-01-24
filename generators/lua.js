@@ -1,18 +1,7 @@
 /**
  * @license
  * Copyright 2016 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -91,6 +80,12 @@ Blockly.Lua.ORDER_NONE = 99;
  */
 
 /**
+ * Whether the init method has been called.
+ * @type {?boolean}
+ */
+Blockly.Lua.isInitialized = false;
+
+/**
  * Initialise the database of variable names.
  * @param {!Blockly.Workspace} workspace Workspace to generate code from.
  */
@@ -108,6 +103,7 @@ Blockly.Lua.init = function(workspace) {
     Blockly.Lua.variableDB_.reset();
   }
   Blockly.Lua.variableDB_.setVariableMap(workspace.getVariableMap());
+  this.isInitialized = true;
 };
 
 /**
@@ -145,7 +141,7 @@ Blockly.Lua.scrubNakedValue = function(line) {
  * quotes.
  * @param {string} string Text to encode.
  * @return {string} Lua string.
- * @private
+ * @protected
  */
 Blockly.Lua.quote_ = function(string) {
   string = string.replace(/\\/g, '\\\\')
@@ -159,13 +155,13 @@ Blockly.Lua.quote_ = function(string) {
  * quotes.
  * @param {string} string Text to encode.
  * @return {string} Lua string.
- * @private
+ * @protected
  */
 Blockly.Lua.multiline_quote_ = function(string) {
-  string = string.replace(/\\/g, '\\\\')
-                 .replace(/\n/g, '\\\n')
-                 .replace(/'/g, '\\\'');
-  return '[===' + string + '===]';
+  var lines = string.split(/\n/g).map(Blockly.Lua.quote_);
+  // Join with the following, plus a newline:
+  // .. '\n' ..
+  return lines.join(' .. \'\\n\' ..\n');
 };
 
 /**
@@ -176,7 +172,7 @@ Blockly.Lua.multiline_quote_ = function(string) {
  * @param {string} code The Lua code created for this block.
  * @param {boolean=} opt_thisOnly True to generate code for only this statement.
  * @return {string} Lua code with comments and subsequent blocks added.
- * @private
+ * @protected
  */
 Blockly.Lua.scrub_ = function(block, code, opt_thisOnly) {
   var commentCode = '';

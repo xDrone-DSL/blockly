@@ -1,18 +1,7 @@
 /**
  * @license
  * Copyright 2012 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -24,6 +13,7 @@
 
 goog.provide('Blockly.Generator');
 
+goog.require('Blockly.constants');
 goog.require('Blockly.Block');
 
 
@@ -88,6 +78,15 @@ Blockly.Generator.prototype.COMMENT_WRAP = 60;
 Blockly.Generator.prototype.ORDER_OVERRIDES = [];
 
 /**
+ * Whether the init method has been called.
+ * Generators that set this flag to false after creation and true in init
+ * will cause blockToCode to emit a warning if the generator has not been
+ * initialized. If this flag is untouched, it will have no effect.
+ * @type {?boolean}
+ */
+Blockly.Generator.prototype.isInitialized = null;
+
+/**
  * Generate code for all blocks in the workspace to the specified language.
  * @param {Blockly.Workspace} workspace Workspace to generate code from.
  * @return {string} Generated code.
@@ -101,7 +100,7 @@ Blockly.Generator.prototype.workspaceToCode = function(workspace) {
   var code = [];
   this.init(workspace);
   var blocks = workspace.getTopBlocks(true);
-  for (var i = 0, block; block = blocks[i]; i++) {
+  for (var i = 0, block; (block = blocks[i]); i++) {
     var line = this.blockToCode(block);
     if (Array.isArray(line)) {
       // Value blocks return tuples of code and operator order.
@@ -169,6 +168,7 @@ Blockly.Generator.prototype.allNestedComments = function(block) {
 
 /**
  * Generate code for the specified block (and attached blocks).
+ * The generator must be initialized before calling this function.
  * @param {Blockly.Block} block The block to generate code for.
  * @param {boolean=} opt_thisOnly True to generate code for only this statement.
  * @return {string|!Array} For statement blocks, the generated code.
@@ -176,12 +176,20 @@ Blockly.Generator.prototype.allNestedComments = function(block) {
  *     operator order value.  Returns '' if block is null.
  */
 Blockly.Generator.prototype.blockToCode = function(block, opt_thisOnly) {
+  if (this.isInitialized === false) {
+    console.warn(
+        'Generator init was not called before blockToCode was called.');
+  }
   if (!block) {
     return '';
   }
   if (!block.isEnabled()) {
     // Skip past this block if it is disabled.
     return opt_thisOnly ? '' : this.blockToCode(block.getNextBlock());
+  }
+  if (block.isInsertionMarker()) {
+    // Skip past insertion markers.
+    return opt_thisOnly ? '' : this.blockToCode(block.getChildren(false)[0]);
   }
 
   var func = this[block.type];
@@ -351,7 +359,7 @@ Blockly.Generator.prototype.injectId = function(msg, block) {
 /**
  * Comma-separated list of reserved words.
  * @type {string}
- * @private
+ * @protected
  */
 Blockly.Generator.prototype.RESERVED_WORDS_ = '';
 
@@ -370,9 +378,31 @@ Blockly.Generator.prototype.addReservedWords = function(words) {
  * legitimately appear in a function definition (or comment), and it must
  * not confuse the regular expression parser.
  * @type {string}
- * @private
+ * @protected
  */
 Blockly.Generator.prototype.FUNCTION_NAME_PLACEHOLDER_ = '{leCUI8hutHZI4480Dc}';
+
+/**
+ * A dictionary of definitions to be printed before the code.
+ * @type {Object}
+ * @protected
+ */
+Blockly.Generator.prototype.definitions_;
+
+/**
+ * A dictionary mapping desired function names in definitions_ to actual
+ * function names (to avoid collisions with user functions).
+ * @type {Object}
+ * @protected
+ */
+Blockly.Generator.prototype.functionNames_;
+
+/**
+ * A database of variable names.
+ * @type {Blockly.Names}
+ * @protected
+ */
+Blockly.Generator.prototype.variableDB_;
 
 /**
  * Define a function to be included in the generated code.
@@ -389,12 +419,12 @@ Blockly.Generator.prototype.FUNCTION_NAME_PLACEHOLDER_ = '{leCUI8hutHZI4480Dc}';
  * @param {!Array.<string>} code A list of statements.  Use '  ' for indents.
  * @return {string} The actual name of the new function.  This may differ
  *     from desiredName if the former has already been taken by the user.
- * @private
+ * @protected
  */
 Blockly.Generator.prototype.provideFunction_ = function(desiredName, code) {
   if (!this.definitions_[desiredName]) {
     var functionName = this.variableDB_.getDistinctName(desiredName,
-        Blockly.Procedures.NAME_TYPE);
+        Blockly.PROCEDURE_CATEGORY_NAME);
     this.functionNames_[desiredName] = functionName;
     var codeText = code.join('\n').replace(
         this.FUNCTION_NAME_PLACEHOLDER_REGEXP_, functionName);
@@ -431,10 +461,12 @@ Blockly.Generator.prototype.init = function(_workspace) {
  * value blocks.
  * @param {!Blockly.Block} _block The current block.
  * @param {string} code The code created for this block.
+ * @param {boolean=} _opt_thisOnly True to generate code for only this
+ *     statement.
  * @return {string} Code with comments and subsequent blocks added.
- * @private
+ * @protected
  */
-Blockly.Generator.prototype.scrub_ = function(_block, code) {
+Blockly.Generator.prototype.scrub_ = function(_block, code, _opt_thisOnly) {
   // Optionally override
   return code;
 };

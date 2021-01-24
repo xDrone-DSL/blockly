@@ -1,18 +1,7 @@
 /**
  * @license
  * Copyright 2012 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -36,7 +25,7 @@ Blockly.JavaScript['lists_create_with'] = function(block) {
   var elements = new Array(block.itemCount_);
   for (var i = 0; i < block.itemCount_; i++) {
     elements[i] = Blockly.JavaScript.valueToCode(block, 'ADD' + i,
-        Blockly.JavaScript.ORDER_COMMA) || 'null';
+        Blockly.JavaScript.ORDER_NONE) || 'null';
   }
   var code = '[' + elements.join(', ') + ']';
   return [code, Blockly.JavaScript.ORDER_ATOMIC];
@@ -55,9 +44,9 @@ Blockly.JavaScript['lists_repeat'] = function(block) {
        '  return array;',
        '}']);
   var element = Blockly.JavaScript.valueToCode(block, 'ITEM',
-      Blockly.JavaScript.ORDER_COMMA) || 'null';
+      Blockly.JavaScript.ORDER_NONE) || 'null';
   var repeatCount = Blockly.JavaScript.valueToCode(block, 'NUM',
-      Blockly.JavaScript.ORDER_COMMA) || '0';
+      Blockly.JavaScript.ORDER_NONE) || '0';
   var code = functionName + '(' + element + ', ' + repeatCount + ')';
   return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
 };
@@ -96,7 +85,7 @@ Blockly.JavaScript['lists_getIndex'] = function(block) {
   // Note: Until January 2013 this block did not have MODE or WHERE inputs.
   var mode = block.getFieldValue('MODE') || 'GET';
   var where = block.getFieldValue('WHERE') || 'FROM_START';
-  var listOrder = (where == 'RANDOM') ? Blockly.JavaScript.ORDER_COMMA :
+  var listOrder = (where == 'RANDOM') ? Blockly.JavaScript.ORDER_NONE :
       Blockly.JavaScript.ORDER_MEMBER;
   var list = Blockly.JavaScript.valueToCode(block, 'VALUE', listOrder) || '[]';
 
@@ -186,7 +175,7 @@ Blockly.JavaScript['lists_setIndex'] = function(block) {
       return '';
     }
     var listVar = Blockly.JavaScript.variableDB_.getDistinctName(
-        'tmpList', Blockly.Variables.NAME_TYPE);
+        'tmpList', Blockly.VARIABLE_CATEGORY_NAME);
     var code = 'var ' + listVar + ' = ' + list + ';\n';
     list = listVar;
     return code;
@@ -232,7 +221,7 @@ Blockly.JavaScript['lists_setIndex'] = function(block) {
     case ('RANDOM'):
       var code = cacheList();
       var xVar = Blockly.JavaScript.variableDB_.getDistinctName(
-          'tmpX', Blockly.Variables.NAME_TYPE);
+          'tmpX', Blockly.VARIABLE_CATEGORY_NAME);
       code += 'var ' + xVar + ' = Math.floor(Math.random() * ' + list +
           '.length);\n';
       if (mode == 'SET') {
@@ -252,7 +241,7 @@ Blockly.JavaScript['lists_setIndex'] = function(block) {
  * @param {string} listName Name of the list, used to calculate length.
  * @param {string} where The method of indexing, selected by dropdown in Blockly
  * @param {string=} opt_at The optional offset when indexing from start/end.
- * @return {string} Index expression.
+ * @return {string|undefined} Index expression.
  * @private
  */
 Blockly.JavaScript.lists.getIndex_ = function(listName, where, opt_at) {

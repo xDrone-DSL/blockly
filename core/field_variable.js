@@ -1,18 +1,7 @@
 /**
  * @license
  * Copyright 2012 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -23,6 +12,7 @@
 
 goog.provide('Blockly.FieldVariable');
 
+goog.require('Blockly.constants');
 goog.require('Blockly.Events');
 goog.require('Blockly.Events.BlockChange');
 goog.require('Blockly.FieldDropdown');
@@ -63,7 +53,8 @@ Blockly.FieldVariable = function(varName, opt_validator, opt_variableTypes,
   /**
    * An array of options for a dropdown list,
    * or a function which generates these options.
-   * @type {!function(this:Blockly.FieldVariable): !Array.<!Array>}
+   * @type {(!Array.<!Array>|
+   *    !function(this:Blockly.FieldDropdown): !Array.<!Array>)}
    * @protected
    */
   this.menuGenerator_ = Blockly.FieldVariable.dropdownCreate;
@@ -74,7 +65,7 @@ Blockly.FieldVariable = function(varName, opt_validator, opt_variableTypes,
    * variable.
    * @type {string}
    */
-  this.defaultVariableName = varName || '';
+  this.defaultVariableName = typeof varName === 'string' ? varName : '';
 
   /**
    * The size of the area rendered by the field.
@@ -82,7 +73,7 @@ Blockly.FieldVariable = function(varName, opt_validator, opt_variableTypes,
    * @protected
    * @override
    */
-  this.size_ = new Blockly.utils.Size(0, Blockly.BlockSvg.MIN_BLOCK_Y);
+  this.size_ = new Blockly.utils.Size(0, 0);
 
   opt_config && this.configure_(opt_config);
   opt_validator && this.setValidator(opt_validator);
@@ -107,13 +98,6 @@ Blockly.FieldVariable.fromJson = function(options) {
   return new Blockly.FieldVariable(
       varName, undefined, undefined, undefined, options);
 };
-
-/**
- * The workspace that this variable field belongs to.
- * @type {?Blockly.Workspace}
- * @private
- */
-Blockly.FieldVariable.prototype.workspace_ = null;
 
 /**
  * Serializable fields are saved by the XML renderer, non-serializable fields
@@ -146,11 +130,17 @@ Blockly.FieldVariable.prototype.initModel = function() {
       this.sourceBlock_.workspace, null,
       this.defaultVariableName, this.defaultType_);
 
-  // Don't fire a change event for this setValue.  It would have null as the
-  // old value, which is not valid.
-  Blockly.Events.disable();
-  this.setValue(variable.getId());
-  Blockly.Events.enable();
+  // Don't call setValue because we don't want to cause a rerender.
+  this.doValueUpdate_(variable.getId());
+};
+
+/**
+ * @override
+ */
+Blockly.FieldVariable.prototype.shouldAddBorderRect_ = function() {
+  return Blockly.FieldVariable.superClass_.shouldAddBorderRect_.call(this) &&
+    (!this.getConstants().FIELD_DROPDOWN_NO_BORDER_RECT_SHADOW ||
+        this.sourceBlock_.type != 'variables_get');
 };
 
 /**
@@ -440,8 +430,9 @@ Blockly.FieldVariable.dropdownCreate = function() {
  * In the rename case, prompt the user for a new name.
  * @param {!Blockly.Menu} menu The Menu component clicked.
  * @param {!Blockly.MenuItem} menuItem The MenuItem selected within menu.
+ * @protected
  */
-Blockly.FieldVariable.prototype.onItemSelected = function(menu, menuItem) {
+Blockly.FieldVariable.prototype.onItemSelected_ = function(menu, menuItem) {
   var id = menuItem.getValue();
   // Handle special cases.
   if (this.sourceBlock_ && this.sourceBlock_.workspace) {

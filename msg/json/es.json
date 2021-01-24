@@ -1,22 +1,24 @@
 {
 	"@metadata": {
 		"authors": [
-			"Fitoschido",
-			"VegaDark",
-			"WeSiToS",
-			"Macofe",
 			"Codynguyen1116",
+			"Fitoschido",
+			"Harvest",
 			"Indiralena",
-			"Rubentl134",
-			"Martineduardo",
 			"Julián L",
+			"Ktranz",
 			"Luisangelrg",
+			"Macofe",
 			"MarcoAurelio",
+			"Martineduardo",
+			"Rubentl134",
 			"Ryo567",
-			"Harvest"
+			"VegaDark",
+			"WeSiToS"
 		]
 	},
 	"VARIABLES_DEFAULT_NAME": "elemento",
+	"UNNAMED_KEY": "Sin nombre",
 	"TODAY": "Hoy",
 	"DUPLICATE_BLOCK": "Duplicar",
 	"ADD_COMMENT": "Añadir comentario",
@@ -102,7 +104,7 @@
 	"IOS_PROCEDURES_DUPLICATE_INPUTS_ERROR": "Esta función tiene entradas duplicadas.",
 	"IOS_VARIABLES_ADD_VARIABLE": "+ Añadir variable",
 	"IOS_VARIABLES_ADD_BUTTON": "Añadir",
-	"IOS_VARIABLES_RENAME_BUTTON": "Renombrar",
+	"IOS_VARIABLES_RENAME_BUTTON": "Cambiar nombre",
 	"IOS_VARIABLES_DELETE_BUTTON": "Borrar",
 	"IOS_VARIABLES_VARIABLE_NAME": "Nombre de la variable",
 	"IOS_VARIABLES_EMPTY_NAME_ERROR": "No puedes usar un nombre de variable vacío.",
@@ -358,5 +360,6 @@
 	"PROCEDURES_IFRETURN_TOOLTIP": "Si un valor es verdadero, entonces devuelve un segundo valor.",
 	"PROCEDURES_IFRETURN_WARNING": "Advertencia: Este bloque solo puede ser utilizado dentro de la definición de una función.",
 	"WORKSPACE_COMMENT_DEFAULT_TEXT": "Di algo…",
+	"WORKSPACE_ARIA_LABEL": "Espacio de trabajo de Blockly",
 	"COLLAPSED_WARNINGS_WARNING": "Bloques colapsados contienen advertencias."
 }

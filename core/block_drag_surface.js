@@ -1,18 +1,7 @@
 /**
  * @license
  * Copyright 2016 Google LLC
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 /**
@@ -30,6 +19,7 @@ goog.provide('Blockly.BlockDragSurfaceSvg');
 goog.require('Blockly.utils');
 goog.require('Blockly.utils.Coordinate');
 goog.require('Blockly.utils.dom');
+goog.require('Blockly.utils.Svg');
 
 
 /**
@@ -93,14 +83,16 @@ Blockly.BlockDragSurfaceSvg.prototype.createDom = function() {
   if (this.SVG_) {
     return;  // Already created.
   }
-  this.SVG_ = Blockly.utils.dom.createSvgElement('svg', {
-    'xmlns': Blockly.utils.dom.SVG_NS,
-    'xmlns:html': Blockly.utils.dom.HTML_NS,
-    'xmlns:xlink': Blockly.utils.dom.XLINK_NS,
-    'version': '1.1',
-    'class': 'blocklyBlockDragSurface'
-  }, this.container_);
-  this.dragGroup_ = Blockly.utils.dom.createSvgElement('g', {}, this.SVG_);
+  this.SVG_ = Blockly.utils.dom.createSvgElement(
+      Blockly.utils.Svg.SVG, {
+        'xmlns': Blockly.utils.dom.SVG_NS,
+        'xmlns:html': Blockly.utils.dom.HTML_NS,
+        'xmlns:xlink': Blockly.utils.dom.XLINK_NS,
+        'version': '1.1',
+        'class': 'blocklyBlockDragSurface'
+      }, this.container_);
+  this.dragGroup_ = Blockly.utils.dom.createSvgElement(
+      Blockly.utils.Svg.G, {}, this.SVG_);
 };
 
 /**
@@ -173,7 +165,7 @@ Blockly.BlockDragSurfaceSvg.prototype.translateSurface = function(x, y) {
  * @return {!Blockly.utils.Coordinate} Current translation of the surface.
  */
 Blockly.BlockDragSurfaceSvg.prototype.getSurfaceTranslation = function() {
-  var xy = Blockly.utils.getRelativeXY(this.SVG_);
+  var xy = Blockly.utils.getRelativeXY(/** @type {!SVGElement} */ (this.SVG_));
   return new Blockly.utils.Coordinate(xy.x / this.scale_, xy.y / this.scale_);
 };
 
@@ -189,11 +181,11 @@ Blockly.BlockDragSurfaceSvg.prototype.getGroup = function() {
 /**
  * Get the current blocks on the drag surface, if any (primarily
  * for BlockSvg.getRelativeToSurfaceXY).
- * @return {!Element|undefined} Drag surface block DOM element, or undefined
- * if no blocks exist.
+ * @return {Element} Drag surface block DOM element, or undefined if no blocks
+ * exist.
  */
 Blockly.BlockDragSurfaceSvg.prototype.getCurrentBlock = function() {
-  return this.dragGroup_.firstChild;
+  return /** @type {Element} */ (this.dragGroup_.firstChild);
 };
 
 /**
