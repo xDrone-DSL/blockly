@@ -67,7 +67,7 @@
     "selenium-standalone": "^6.16.0",
     "rimraf": "^2.6.3",
     "typescript-closure-tools": "^0.0.7",
-    "webdriverio": "^5.11.5",
+    "webdriverio": "^7.0.7",
     "yargs": "^14.0.0"
   },
   "jshintConfig": {
