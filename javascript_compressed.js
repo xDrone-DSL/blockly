@@ -117,8 +117,8 @@ Blockly.JavaScript.text_replace=function(a){var b=Blockly.JavaScript.valueToCode
  Copyright 2018 Google LLC
  SPDX-License-Identifier: Apache-2.0
 */
-Blockly.JavaScript.variablesDynamic={};Blockly.JavaScript.variables_get_dynamic=Blockly.JavaScript.variables_get;Blockly.JavaScript.variables_set_dynamic=Blockly.JavaScript.variables_set;Blockly.JavaScript.xDrone={};Blockly.JavaScript.fly=function(a){return"fly() {\n  TAKEOFF()\n"+Blockly.JavaScript.statementToCode(a,"commands")+"  LAND()\n}"};Blockly.JavaScript.move=function(a){var b=a.getFieldValue("direction");a=a.getFieldValue("duration");return b+"("+a+")\n"};Blockly.JavaScript.rotateRight=function(a){return"ROTATERIGHT("+a.getFieldValue("angle")+")\n"};Blockly.JavaScript.rotateLeft=function(a){return"ROTATELEFT("+a.getFieldValue("angle")+")\n"};Blockly.JavaScript.action=function(a){return"ACTION()\n"};
-Blockly.JavaScript.repeat=function(a){var b=a.getFieldValue("repeat");a=Blockly.JavaScript.statementToCode(a,"commands");return"REPEAT "+b+" TIMES {\n"+a+"}\n"};
+Blockly.JavaScript.variablesDynamic={};Blockly.JavaScript.variables_get_dynamic=Blockly.JavaScript.variables_get;Blockly.JavaScript.variables_set_dynamic=Blockly.JavaScript.variables_set;Blockly.JavaScript.xDrone={};Blockly.JavaScript.fly=function(a){return"main() {\n  takeoff();\n"+Blockly.JavaScript.statementToCode(a,"commands")+"  land();\n}"};Blockly.JavaScript.move=function(a){var b=a.getFieldValue("direction");a=a.getFieldValue("duration");return b+"("+a+");\n"};Blockly.JavaScript.rotateRight=function(a){return"rotate_right("+a.getFieldValue("angle")+");\n"};Blockly.JavaScript.rotateLeft=function(a){return"rotate_left("+a.getFieldValue("angle")+");\n"};
+Blockly.JavaScript.repeat=function(a){var b=a.getFieldValue("repeat");a=Blockly.JavaScript.statementToCode(a,"commands");return"repeat "+b+" times {\n"+a+"}\n"};
 return Blockly.JavaScript;
 }));
 

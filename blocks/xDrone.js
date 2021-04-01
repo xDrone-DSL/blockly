@@ -26,12 +26,12 @@ Blockly.defineBlocksWithJsonArray([
         type: "field_dropdown",
         name: "direction",
         options: [
-          ["forward", "FORWARD"],
-          ["backward", "BACKWARD"],
-          ["right", "RIGHT"],
-          ["left", "LEFT"],
-          ["up", "UP"],
-          ["down", "DOWN"]
+          ["forward", "forward"],
+          ["backward", "backward"],
+          ["right", "right"],
+          ["left", "left"],
+          ["up", "up"],
+          ["down", "down"]
         ]
       },
       {
@@ -85,15 +85,6 @@ Blockly.defineBlocksWithJsonArray([
     nextStatement: null,
     colour: "#3B92B8",
     tooltip: "rotate",
-    helpUrl: ""
-  },
-  {
-    type: "action",
-    message0: "Action",
-    previousStatement: null,
-    nextStatement: null,
-    colour: 0,
-    tooltip: "action",
     helpUrl: ""
   },
   {

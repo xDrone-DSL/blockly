@@ -7,7 +7,7 @@ Blockly.JavaScript["fly"] = function(block) {
       "commands"
   );
   var code =
-      "fly() {\n" + "  TAKEOFF()\n" + statements_commands + "  LAND()\n" + "}";
+      "main() {\n" + "  takeoff();\n" + statements_commands + "  land();\n" + "}";
   return code;
 };
 
@@ -15,26 +15,21 @@ Blockly.JavaScript["move"] = function(block) {
   var dropdown_direction = block.getFieldValue("direction");
   var number_duration = block.getFieldValue("duration");
 
-  var code = dropdown_direction + "(" + number_duration + ")\n";
+  var code = dropdown_direction + "(" + number_duration + ");\n";
   return code;
 };
 
 Blockly.JavaScript["rotateRight"] = function(block) {
   var angle = block.getFieldValue("angle");
 
-  var code = "ROTATERIGHT(" + angle + ")\n";
+  var code = "rotate_right(" + angle + ");\n";
   return code;
 };
 
 Blockly.JavaScript["rotateLeft"] = function(block) {
   var angle = block.getFieldValue("angle");
 
-  var code = "ROTATELEFT(" + angle + ")\n";
-  return code;
-};
-
-Blockly.JavaScript["action"] = function(block) {
-  var code = "ACTION()\n";
+  var code = "rotate_left(" + angle + ");\n";
   return code;
 };
 
@@ -44,6 +39,6 @@ Blockly.JavaScript["repeat"] = function(block) {
       block,
       "commands"
   );
-  var code = "REPEAT " + number_repeat + " TIMES {\n" + statements_commands + "}\n";
+  var code = "repeat " + number_repeat + " times {\n" + statements_commands + "}\n";
   return code;
 };
